@@ -13,8 +13,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# Approximate USD to BDT exchange rate
-# Update this rate when needed.
 USD_TO_BDT = 124.73
 
 # =====================================
@@ -23,56 +21,49 @@ USD_TO_BDT = 124.73
 
 st.markdown("""
 <style>
-    .stApp {
-        background: linear-gradient(135deg, #f5f9ff, #edf4ff);
-    }
-
-    .main .block-container {
-        max-width: 1050px;
-        padding-top: 2rem;
-        padding-bottom: 3rem;
-    }
-
-    .hero {
-        background: linear-gradient(120deg, #123c69, #2563eb);
-        padding: 35px 30px;
-        border-radius: 20px;
-        color: white;
-        text-align: center;
-        margin-bottom: 25px;
-        box-shadow: 0 8px 25px rgba(37,99,235,0.18);
-    }
-
-    .hero h1 {
-        color: white;
-        font-size: 32px;
-        margin-bottom: 10px;
-    }
-
-    .hero p {
-        color: #e5efff;
-        font-size: 16px;
-    }
-
-    .section-title {
-        color: #123c69;
-        font-size: 22px;
-        font-weight: 700;
-        margin: 15px 0;
-    }
-
-    .result-note {
-        background: #e8f1ff;
-        border-left: 4px solid #2563eb;
-        padding: 14px;
-        border-radius: 8px;
-        color: #123c69;
-        margin-top: 15px;
-    }
-
-    footer {
-        visibility: hidden;
-    }
+.stApp {
+    background: linear-gradient(135deg, #f5f9ff, #edf4ff);
+}
+.main .block-container {
+    max-width: 1050px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+.hero {
+    background: linear-gradient(120deg, #123c69, #2563eb);
+    padding: 35px 30px;
+    border-radius: 20px;
+    color: white;
+    text-align: center;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(37,99,235,0.18);
+}
+.hero h1 {
+    color: white;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+.hero p {
+    color: #e5efff;
+    font-size: 16px;
+}
+.section-title {
+    color: #123c69;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 15px 0;
+}
+.result-note {
+    background: #e8f1ff;
+    border-left: 4px solid #2563eb;
+    padding: 14px;
+    border-radius: 8px;
+    color: #123c69;
+    margin-top: 15px;
+}
+footer {
+    visibility: hidden;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -87,13 +78,12 @@ language = st.radio(
 )
 
 if language == "বাংলা":
-
     t = {
         "title": "মেডিকেল ইন্স্যুরেন্স কস্ট ফোরকাস্টার",
         "subtitle": "Machine Learning ব্যবহার করে আনুমানিক Insurance Cost জানুন",
         "form": "আপনার তথ্য দিন",
         "age": "আপনার বয়স",
-        "gender": "লিঙ্গ",
+        "gender": "লিঙ্গ নির্বাচন করুন",
         "male": "পুরুষ",
         "female": "নারী",
         "height": "উচ্চতা",
@@ -104,11 +94,10 @@ if language == "বাংলা":
         "smoker": "আপনি কি ধূমপান করেন?",
         "yes": "হ্যাঁ",
         "no": "না",
-        "region": "অঞ্চল",
+        "region": "অঞ্চল নির্বাচন করুন",
         "predict": "ইন্স্যুরেন্স খরচ অনুমান করুন",
         "result": "আপনার Prediction Result",
         "bmi": "আপনার BMI",
-        "cost": "আনুমানিক Insurance Cost",
         "success": "Prediction সফল হয়েছে!",
         "disclaimer": "এটি একটি Machine Learning ভিত্তিক আনুমানিক ফলাফল। এটি প্রকৃত Insurance Quote নয়।",
         "rate": "আনুমানিক বিনিময় হার",
@@ -117,17 +106,16 @@ if language == "বাংলা":
         "northwest": "উত্তর-পশ্চিম",
         "southeast": "দক্ষিণ-পূর্ব",
         "southwest": "দক্ষিণ-পশ্চিম",
-        "bmi_category": "BMI ক্যাটাগরি"
+        "select": "-- নির্বাচন করুন --",
+        "required": "সবগুলো তথ্য পূরণ করুন।"
     }
-
 else:
-
     t = {
         "title": "Medical Insurance Cost Forecaster",
         "subtitle": "Estimate your insurance cost using Machine Learning",
         "form": "Enter Your Information",
         "age": "Your Age",
-        "gender": "Gender",
+        "gender": "Select Gender",
         "male": "Male",
         "female": "Female",
         "height": "Height",
@@ -138,11 +126,10 @@ else:
         "smoker": "Are You a Smoker?",
         "yes": "Yes",
         "no": "No",
-        "region": "Region",
+        "region": "Select Region",
         "predict": "Predict Insurance Cost",
         "result": "Your Prediction Result",
         "bmi": "Your BMI",
-        "cost": "Estimated Insurance Cost",
         "success": "Prediction Completed Successfully!",
         "disclaimer": "This is a Machine Learning estimate, not an actual insurance quote.",
         "rate": "Approximate Exchange Rate",
@@ -151,7 +138,8 @@ else:
         "northwest": "Northwest",
         "southeast": "Southeast",
         "southwest": "Southwest",
-        "bmi_category": "BMI Category"
+        "select": "-- Select --",
+        "required": "Please fill in all fields."
     }
 
 # =====================================
@@ -169,7 +157,7 @@ st.markdown(
 )
 
 # =====================================
-# LOAD TRAINED MODEL
+# LOAD MODEL
 # =====================================
 
 @st.cache_resource
@@ -179,10 +167,7 @@ def load_model():
 try:
     model = load_model()
 except Exception:
-    st.error(
-        "Model could not be loaded. Please check the model file "
-        "and deployment logs."
-    )
+    st.error("Model could not be loaded. Please check the model file.")
     st.stop()
 
 # =====================================
@@ -204,12 +189,14 @@ with st.form("insurance_form"):
             t["age"],
             min_value=1,
             max_value=100,
-            value=30
+            value=None,
+            placeholder="Enter age",
+            step=1
         )
 
         gender_label = st.selectbox(
             t["gender"],
-            [t["male"], t["female"]]
+            [t["select"], t["male"], t["female"]]
         )
 
         st.write(t["height"])
@@ -221,7 +208,9 @@ with st.form("insurance_form"):
                 t["feet"],
                 min_value=1,
                 max_value=8,
-                value=5
+                value=None,
+                placeholder="Feet",
+                step=1
             )
 
         with h2:
@@ -229,14 +218,17 @@ with st.form("insurance_form"):
                 t["inches"],
                 min_value=0,
                 max_value=11,
-                value=6
+                value=None,
+                placeholder="Inches",
+                step=1
             )
 
         weight = st.number_input(
             t["weight"],
             min_value=1.0,
             max_value=300.0,
-            value=70.0,
+            value=None,
+            placeholder="Enter weight",
             step=0.5
         )
 
@@ -246,15 +238,18 @@ with st.form("insurance_form"):
             t["children"],
             min_value=0,
             max_value=20,
-            value=1
+            value=None,
+            placeholder="Enter number",
+            step=1
         )
 
         smoker_label = st.selectbox(
             t["smoker"],
-            [t["no"], t["yes"]]
+            [t["select"], t["no"], t["yes"]]
         )
 
         region_labels = [
+            t["select"],
             t["northeast"],
             t["northwest"],
             t["southeast"],
@@ -278,102 +273,108 @@ with st.form("insurance_form"):
 
 if submitted:
 
-    height_meters = (
-        height_feet * 12 + height_inches
-    ) * 0.0254
-
-    if height_meters <= 0:
-
-        st.error("Please enter a valid height.")
+    if (
+        age is None
+        or height_feet is None
+        or height_inches is None
+        or weight is None
+        or children is None
+        or gender_label == t["select"]
+        or smoker_label == t["select"]
+        or region_label == t["select"]
+    ):
+        st.warning(t["required"])
 
     else:
 
-        bmi = weight / (height_meters ** 2)
+        height_meters = (
+            height_feet * 12 + height_inches
+        ) * 0.0254
 
-        gender = (
-            "male" if gender_label == t["male"]
-            else "female"
-        )
+        if height_meters <= 0:
+            st.error("Please enter a valid height.")
 
-        smoker = (
-            "yes" if smoker_label == t["yes"]
-            else "no"
-        )
+        else:
 
-        region_mapping = {
-            t["northeast"]: "northeast",
-            t["northwest"]: "northwest",
-            t["southeast"]: "southeast",
-            t["southwest"]: "southwest"
-        }
+            bmi = weight / (height_meters ** 2)
 
-        region = region_mapping[region_label]
-
-        user_data = pd.DataFrame({
-            "age": [age],
-            "sex": [gender],
-            "bmi": [bmi],
-            "children": [children],
-            "smoker": [smoker],
-            "region": [region]
-        })
-
-        try:
-
-            prediction = float(
-                model.predict(user_data)[0]
+            gender = (
+                "male" if gender_label == t["male"]
+                else "female"
             )
 
-            prediction_bdt = prediction * USD_TO_BDT
-
-            st.markdown("---")
-
-            st.markdown(
-                f'<div class="section-title">📊 {t["result"]}</div>',
-                unsafe_allow_html=True
+            smoker = (
+                "yes" if smoker_label == t["yes"]
+                else "no"
             )
 
-            st.success(t["success"])
+            region_mapping = {
+                t["northeast"]: "northeast",
+                t["northwest"]: "northwest",
+                t["southeast"]: "southeast",
+                t["southwest"]: "southwest"
+            }
 
-            result1, result2, result3 = st.columns(3)
+            region = region_mapping[region_label]
 
-            with result1:
-                st.metric(
-                    t["bmi"],
-                    f"{bmi:.2f}"
+            user_data = pd.DataFrame({
+                "age": [age],
+                "sex": [gender],
+                "bmi": [bmi],
+                "children": [children],
+                "smoker": [smoker],
+                "region": [region]
+            })
+
+            try:
+
+                prediction = float(model.predict(user_data)[0])
+                prediction_bdt = prediction * USD_TO_BDT
+
+                st.markdown("---")
+
+                st.markdown(
+                    f'<div class="section-title">📊 {t["result"]}</div>',
+                    unsafe_allow_html=True
                 )
 
-            with result2:
-                st.metric(
-                    "Estimated Cost (USD)",
-                    f"${prediction:,.2f}"
+                st.success(t["success"])
+
+                result1, result2, result3 = st.columns(3)
+
+                with result1:
+                    st.metric(t["bmi"], f"{bmi:.2f}")
+
+                with result2:
+                    st.metric(
+                        "Estimated Cost (USD)",
+                        f"${prediction:,.2f}"
+                    )
+
+                with result3:
+                    st.metric(
+                        "আনুমানিক খরচ (BDT)" if language == "বাংলা"
+                        else "Estimated Cost (BDT)",
+                        f"৳{prediction_bdt:,.2f}"
+                    )
+
+                st.info(
+                    f"{t['rate']}: 1 USD ≈ ৳{USD_TO_BDT:.2f}"
                 )
 
-            with result3:
-                st.metric(
-                    "আনুমানিক খরচ (BDT)" if language == "বাংলা"
-                    else "Estimated Cost (BDT)",
-                    f"৳{prediction_bdt:,.2f}"
+                st.markdown(
+                    f"""
+                    <div class="result-note">
+                        <b>⚠️ {t['disclaimer']}</b>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
                 )
 
-            st.info(
-                f"{t['rate']}: 1 USD ≈ ৳{USD_TO_BDT:.2f}"
-            )
-
-            st.markdown(
-                f"""
-                <div class="result-note">
-                    <b>⚠️ {t['disclaimer']}</b>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-        except Exception:
-
-            st.error(
-                "Prediction failed. Please check your model and input data."
-            )
+            except Exception:
+                st.error(
+                    "Prediction failed. Please check your model and input data."
+                )
 
 # =====================================
 # FOOTER
